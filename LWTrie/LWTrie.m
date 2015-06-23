@@ -40,7 +40,7 @@
 
 
 - (BOOL)hasChildren {
-    return _children;
+    return _children != nil && _children.count > 0;
 }
 
 - (NSMutableDictionary *)children {
