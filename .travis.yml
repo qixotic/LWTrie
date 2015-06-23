@@ -1,0 +1,3 @@
+language: objective-c
+xcode_project: LWTrie.xcodeproj
+xcode_scheme: LWTrie
