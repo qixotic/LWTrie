@@ -30,4 +30,9 @@
 
 /// Dump some stats info to the console.
 - (void)stats;
+
+/**
+ * Returns the values of a node with a given prefix and all descendants
+ */
+- (NSArray *)valuesWithPrefix:(NSString *)prefix;
 @end

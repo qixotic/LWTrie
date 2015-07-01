@@ -153,6 +153,32 @@
     XCTAssertNil(result, @"'ho' not nil");
 }
 
+- (void)testvaluesWithPrefix{
+    [_trie insert:@"hi" value:@1];
+    [_trie insert:@"howdy" value:@2];
+    [_trie insert:@"how" value:@3];
+    [_trie insert:@"howard" value:@4];
+    [_trie insert:@"howards" value:@5];
+    [_trie insert:@"hola" value:@6];
+
+    [_trie stats];
+
+    NSString *str = @"how";
+
+    NSArray *valuelist = [_trie valuesWithPrefix:str];
+
+    NSLog(@"%lu nodes in array", [valuelist count]);
+
+    XCTAssertEqual([valuelist count], 4);
+    XCTAssertTrue([valuelist containsObject:@2]);
+    XCTAssertTrue([valuelist containsObject:@3]);
+    XCTAssertTrue([valuelist containsObject:@4]);
+    XCTAssertTrue([valuelist containsObject:@5]);
+
+    XCTAssertFalse([valuelist containsObject:@1]);
+    XCTAssertFalse([valuelist containsObject:@6]);
+}
+
 # pragma mark - utilities
 
 - (void)writeBinaryPlist:(NSDictionary *)dict path:(NSString *)path {

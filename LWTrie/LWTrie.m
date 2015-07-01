@@ -318,6 +318,32 @@
     }
 }
 
+- (NSArray *)valuesWithPrefix:(NSString *)prefix{
+
+    NSMutableArray* valueList = [[NSMutableArray alloc]init];
+    LWTrieNode *node = [self.root find:prefix startingAt:0];
+
+    if (node) {
+        [self addValuesFromDescendantsOfNode:node toArray:valueList];
+    }else{
+        NSLog(@"Error: Node not found for prefix: %@", prefix);
+    }
+
+    return valueList;
+}
+
+- (void)addValuesFromDescendantsOfNode:(LWTrieNode *)node toArray:(NSMutableArray *)valueList{
+
+    [valueList addObject:node->item];
+
+    if ([node hasChildren]) {
+        for (NSNumber* child in node.children) {
+            LWTrieNode *childNode = [node getChildForKey:child];
+            [self addValuesFromDescendantsOfNode:childNode toArray:valueList];
+        }
+    }
+}
+
 #pragma mark - NSCoding protocol
 
 #define kRoot @"r"
