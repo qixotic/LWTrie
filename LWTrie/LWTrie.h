@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+/// An implementation of a patricia trie that supports words from an arbitrary character set.
 @interface LWTrie : NSObject <NSCoding>
 
 - (id)init;
-- (id)initWithCapacity:(NSInteger)capacity;
 
 /**
  * Maps this word to the given object, replacing any previous value if present.

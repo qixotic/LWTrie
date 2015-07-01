@@ -11,22 +11,32 @@
 #import <objc/runtime.h>
 
 
+/**
+ * Internal node structure of our trie.
+ */
 @interface LWTrieNode : NSObject <NSCoding> {
 @public
+    /**
+     * The string of characters that terminate at this node. In a regular trie, each character would
+     * correspond to a separate node, with a single pointer in 'children' pointing to the next node.
+     */
     NSString *prefix;
+    /**
+     * The value associated with the word formed by concatenating the prefixes from the root to this
+     * node. 'item' may be nil!
+     */
     id item;
     LWTrieNode *parent;
 }
+/**
+ * Our dictionary of children nodes maps a single character key to a child node. This lets us use
+ * an arbitrary character set for the words in our trie. It is lazily instantiated on first access.
+ */
 @property (nonatomic, strong) NSMutableDictionary *children;
 @end
 
 
 @implementation LWTrieNode
-
-#define kPrefix     @"1"
-#define kItem       @"2"
-#define kParent     @"3"
-#define kChildren   @"4"
 
 - (id)initWithPrefix:(NSString *)myPrefix value:(id)myValue parent:(LWTrieNode *)myParent {
     self = [super init];
@@ -51,7 +61,7 @@
 }
 
 - (LWTrieNode *)getChildForKey:(NSNumber *)ch {
-    return [self.children objectForKey:ch];
+    return _children == nil ? nil : [self.children objectForKey:ch];
 }
 
 // Splits the current node's prefix in two, creating a new child node that takes ownership of the
@@ -199,7 +209,13 @@
     return _children ? _children.count : 0;
 }
 
-#pragma mark - NSCoding Delegate
+#pragma mark - NSCoding protocol
+
+// NSCoding keys
+#define kPrefix     @"1"
+#define kItem       @"2"
+#define kParent     @"3"
+#define kChildren   @"4"
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     if (prefix != nil) {
@@ -215,7 +231,6 @@
         [aCoder encodeObject:_children forKey:kChildren];
     }
 }
-
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [self init]) {
@@ -243,13 +258,8 @@
 @implementation LWTrie
 
 - (id)init {
-    self = [self initWithCapacity:10];
-    return self;
-}
-
-- (id)initWithCapacity:(NSInteger)capacity {
     if (self = [super init]) {
-        self.root = [[LWTrieNode alloc] init];
+        self.root = [[LWTrieNode alloc] initWithPrefix:@"" value:nil parent:nil];
     }
     return self;
 }
@@ -314,7 +324,6 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_root forKey:kRoot];
 }
-
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [self init]) {
